@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function status(){
-        return response()->json (['status'=> 'ok']);
-    }
-    public function index(){
-        $posts=Post::all();
+    public function index()
+    {
+        $posts = Post::all();
+
         return response()->json($posts);
-
-
     }
-    public function store(Request $request){
-        Post::create([
-        'titulo' => $request -> ['titulo'],
-        'conteudo' => $request -> ['conteudo'],
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'titulo' => ['required', 'string', 'max:255'],
+            'conteudo' => ['required', 'string'],
         ]);
-        return response()->json ($post);
+
+        $post = Post::create($validated);
+
+        return response()->json($post, 201);
     }
 }
